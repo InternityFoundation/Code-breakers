@@ -42,6 +42,13 @@ if __name__=="__main__":
                 if  grey(*imagefile.getpixel(Wnew)) - Wp < 10:
                     return Wnew
 
+        #Recognition
+        def recognize(focus, label):
+            global item
+            Object = imagefile.crop(frame.coords(focus))
+            frame.itemconfig( label, text = List[item] )
+            item+=1
+
         #Detection
         objects=[]
         W = 0
@@ -88,7 +95,9 @@ if __name__=="__main__":
                     
             if obj == False and (N[1],S[1],W,E).count(0) == 0 :
                 focus = frame.create_rectangle(W[0], N[1][1], E[0], S[1][1], outline='darkblue')
-                objects.append( [W, Wp, focus] )                
+                label = frame.create_text(W[0]+15, N[1][1]-10, fill="darkblue", font=("Arial",14), text="")
+                objects.append( [W, Wp, focus, label] )
+                threading.Thread(target=recognize, args=[focus, label]).start()                
                 W = 0
                 E = 0
                 N = [vdots, 0]
